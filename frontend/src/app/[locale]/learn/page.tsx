@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, TrendingUp, Layers, RefreshCw, DollarSign, Zap, ArrowLeft } from 'lucide-react';
+import { BookOpen, TrendingUp, Layers, RefreshCw, DollarSign, Zap, ArrowLeft, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface GlossaryEntry {
@@ -8,6 +8,7 @@ interface GlossaryEntry {
   iconColor: string;
   summary: string;
   detail: string;
+  dashboardLink: { href: string; label: string };
 }
 
 const GLOSSARY: GlossaryEntry[] = [
@@ -18,6 +19,7 @@ const GLOSSARY: GlossaryEntry[] = [
     summary: 'How much your money grows in one year, expressed as a percentage.',
     detail:
       'APY (Annual Percentage Yield) is the real return you earn over a year including the effect of compounding. Compounding means your earnings themselves earn interest. For example, 8% APY on 1,000 USDC means you would have roughly 1,080 USDC after one year — even if the rate was only applied daily and the daily earnings were added back to your balance.',
+    dashboardLink: { href: '/dashboard#apy', label: 'View current APY on the dashboard' },
   },
   {
     term: 'Shares',
@@ -26,6 +28,7 @@ const GLOSSARY: GlossaryEntry[] = [
     summary: 'Your ownership record inside the NeuroWealth vault.',
     detail:
       'When you deposit USDC, the smart contract mints "shares" that represent your portion of the total vault. As the vault earns yield, each share becomes worth slightly more USDC. When you withdraw, your shares are burned and you receive back USDC. You never hold shares directly in your wallet — they live inside the Soroban contract.',
+    dashboardLink: { href: '/dashboard#balance', label: 'View your share balance on the dashboard' },
   },
   {
     term: 'Exchange Rate',
@@ -34,6 +37,7 @@ const GLOSSARY: GlossaryEntry[] = [
     summary: 'How many USDC one share is currently worth.',
     detail:
       'The exchange rate starts at 1.0 (1 share = 1 USDC) and rises over time as yield accumulates in the vault. If the exchange rate is 1.05, each share is worth 1.05 USDC. The rate only ever increases — it never drops from earned yield, though unexpected protocol losses could theoretically reduce it.',
+    dashboardLink: { href: '/dashboard#chart', label: 'View the exchange-rate chart on the dashboard' },
   },
   {
     term: 'Rebalancing',
@@ -42,6 +46,7 @@ const GLOSSARY: GlossaryEntry[] = [
     summary: 'When the AI moves your funds to a better-yielding protocol.',
     detail:
       'The AI agent checks available yield rates across all integrated protocols every hour. If a different protocol offers more than 0.5% higher APY, it calls the vault\'s rebalance function to move the pooled funds. This is fully automated — you do not need to approve each rebalance. The vault enforces a cooldown between rebalances to prevent excessive activity.',
+    dashboardLink: { href: '/dashboard#activity', label: 'View rebalance activity on the dashboard' },
   },
   {
     term: 'Blend Protocol',
@@ -50,6 +55,7 @@ const GLOSSARY: GlossaryEntry[] = [
     summary: 'A decentralised lending protocol on the Stellar network.',
     detail:
       'Blend is a lending protocol built with Soroban smart contracts on Stellar. Depositors supply USDC that borrowers can borrow by posting collateral. Lenders earn interest paid by borrowers. NeuroWealth\'s Conservative and Balanced strategies use Blend as the primary yield source. Learn more at blendprotocol.org.',
+    dashboardLink: { href: '/dashboard#strategy', label: 'View your strategy allocation on the dashboard' },
   },
   {
     term: 'DEX — Decentralised Exchange',
@@ -58,6 +64,7 @@ const GLOSSARY: GlossaryEntry[] = [
     summary: 'A trading exchange that runs on-chain with no central operator.',
     detail:
       'Stellar has a built-in DEX where anyone can trade assets without a central company in the middle. Liquidity providers (LPs) deposit pairs of assets into a pool; traders swap through those pools and pay a fee. LPs earn a share of those fees. The Balanced and Growth strategies may deploy funds into Stellar DEX liquidity pools to capture trading fees as an additional yield source.',
+    dashboardLink: { href: '/dashboard#strategy', label: 'View your strategy allocation on the dashboard' },
   },
 ];
 
@@ -148,6 +155,16 @@ export default function LearnPage() {
                     <p className="text-sm font-medium text-emerald-400 mb-2">{entry.summary}</p>
                   </dt>
                   <dd className="text-sm text-slate-400 leading-relaxed">{entry.detail}</dd>
+                  <div className="mt-3 pt-3 border-t border-slate-700/40">
+                    <Link
+                      href={entry.dashboardLink.href}
+                      aria-label={`${entry.dashboardLink.label} — press Back to return here`}
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
+                    >
+                      <ArrowUpRight size={13} aria-hidden="true" />
+                      {entry.dashboardLink.label}
+                    </Link>
+                  </div>
                 </div>
               );
             })}
